@@ -7,6 +7,7 @@ app.use(express.json());
 const { connection } = require("./Config/Config");
 const CustomerController = require("./Controllers/Customer.controller");
 const CruiserController = require("./Controllers/Cruiser.controllers");
+const CustomerModel = require("./Models/Customer.model");
 
 app.get("/", async (req, res) => {
   return res.status(200).send("HomePage");
@@ -14,6 +15,14 @@ app.get("/", async (req, res) => {
 
 app.use("/customer", CustomerController);
 app.use("/cruiser", CruiserController);
+
+const listCustomers = () => {
+  CustomerModel.find().then((customers) => {
+    console.info(customers);
+    console.info(`${customers.length} customers`);
+    connection.close();
+  });
+};
 
 app.listen(process.env.PORT, async () => {
   try {
@@ -24,3 +33,7 @@ app.listen(process.env.PORT, async () => {
     console.log("err:", err);
   }
 });
+
+module.exports = {
+  listCustomers,
+};
